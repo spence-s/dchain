@@ -1,5 +1,5 @@
 {
-  "name": "lassify",
+  "name": "@lassjs/lassify",
   "description": "cli for lass",
   "version": "0.0.0",
   "author": {
@@ -11,7 +11,7 @@
     "lassify": "src/cli.js"
   },
   "bugs": {
-    "url": "https://github.com/Spence-S/lassify/issues",
+    "url": "https://github.com//lassify/issues",
     "email": "sasnyde2@gmail.com"
   },
   "contributors": [
@@ -50,7 +50,7 @@
   "engines": {
     "node": ">= 10"
   },
-  "homepage": "https://github.com/Spence-S/lassify",
+  "homepage": "https://github.com/lassjs/lassify",
   "keywords": [
     "lass",
     "lassify"
@@ -59,7 +59,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Spence-S/lassify.git"
+    "url": "git+https://github.com/lassjs/lassify.git"
   },
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",

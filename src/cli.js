@@ -5,17 +5,17 @@ import lassify from './lassify.js';
 
 const cli = meow(
   `
-  Run lassify at the root of any project to install and manage your devDependencies.
+    Run lassify at the root of any project to install and manage your devDependencies.
 
-	Usage:
-	  $ lassify [options]
+    Usage:
+      $ lassify [options]
 
-	Options
-    --cwd   Optional directory to run the cli from. Defaults to process.cwd().
+    Options
+      --cwd   Optional directory to run the cli from. Defaults to process.cwd().
 
-	Examples
-	  $ lassify
-    $ lassify --cwd '../other/directory'
+    Examples
+      $ lassify
+      $ lassify --cwd '../other/directory'
 `,
   {
     importMeta: import.meta,
