@@ -1,5 +1,5 @@
 {
-  "name": "@lassjs/lassify",
+  "name": "lassify",
   "description": "cli for lass",
   "version": "0.0.0",
   "author": {
@@ -11,7 +11,7 @@
     "lassify": "src/cli.js"
   },
   "bugs": {
-    "url": "https://github.com//lassify/issues",
+    "url": "https://github.com/lassjs/lassify/issues",
     "email": "sasnyde2@gmail.com"
   },
   "contributors": [
