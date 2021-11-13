@@ -7,11 +7,6 @@ export const MANAGED_DEPS = [
   'eslint-config-xo-lass',
   'fixpack',
   'nyc',
-  'remark-cli',
-  'remark-preset-github',
-  'remark-preset-lint-reccomended',
-  'remark-preset-lint-markdown-style-guide',
-  'remark-preset-prettier',
   'prettier',
   'stylelint',
   'stylelint-config-xo'
@@ -27,12 +22,10 @@ export const defaultConfig = {
     commitlint: true
   },
   md: {
-    remark: true,
     prettier: true
   },
   js: {
     xo: true,
-    eslint: false,
     prettier: true
   },
   test: {

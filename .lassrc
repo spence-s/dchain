@@ -7,7 +7,6 @@
     "commitlint": true
   },
   "md": {
-    "remark": true,
     "prettier": true
   },
   "js": {

@@ -22,7 +22,7 @@ export default async function lassify({ cwd: _cwd }) {
   const spinner = ora();
 
   spinner.start('Reading package.json');
-  const { path: pkgPath, packageJson } = await readPackageUp({
+  let { path: pkgPath, packageJson } = await readPackageUp({
     cwd,
     normalize: false
   });
@@ -63,15 +63,13 @@ export default async function lassify({ cwd: _cwd }) {
   let newPackageJsonDeps = {};
 
   if (!isEmpty(installedManagedDeps)) {
-    spinner.info('Checking for dependency updates');
-
     const upgradeable = await ncu.run({
       loglevel: 'silent',
       packageData: { devDependencies: installedManagedDeps }
     });
 
     if (!isEmpty(upgradeable)) {
-      spinner.info('Updates needed');
+      spinner.info('Dependency updates available');
 
       const questions = Object.entries(upgradeable).map(([key, value]) => ({
         type: 'confirm',
@@ -134,6 +132,7 @@ export default async function lassify({ cwd: _cwd }) {
     };
 
     // clean errors from pkg up
+    // this may not be needed without normalization
     delete newPackageJson._id;
     for (const [key, value] of Object.entries(newPackageJson)) {
       if (isSANB(value) && value.includes('ERROR')) delete newPackageJson[key];
@@ -146,6 +145,8 @@ export default async function lassify({ cwd: _cwd }) {
     }
 
     await fs.writeFile(pkgPath, JSON.stringify(newPackageJson, null, 2));
+
+    packageJson = newPackageJson;
 
     spinner.succeed('Package updated!');
     spinner.succeed('Installing new and/or updated dependencies');
@@ -216,7 +217,9 @@ export default async function lassify({ cwd: _cwd }) {
         let isChanged = false;
 
         // simple dedupe
-        for (const ignore of defaultGitIgnore) {
+        for (const ignore of defaultGitIgnore.filter(
+          (line) => !line.startsWith('#')
+        )) {
           if (currentGitIgnore.includes(ignore)) continue;
           currentGitIgnore.push(ignore);
           isChanged = true;
@@ -242,8 +245,10 @@ export default async function lassify({ cwd: _cwd }) {
     if (config.git.husky) {
       const husky = path.join(cwd, 'node_modules', '.bin', 'husky');
       if (await pathExists(husky)) {
-        await spawn(husky, ['install']);
-        spinner.succeed('husky installed');
+        await spawn(husky, ['install'], { stdio: 'ignore' });
+        if (await pathExists(path.join(cwd, '.husky')))
+          spinner.warn('husky previously installed and updated.');
+        else spinner.succeed('husky installed');
         // commitlint
         if (config.git.commitlint) {
           // install commitlint husky hook
@@ -253,11 +258,11 @@ export default async function lassify({ cwd: _cwd }) {
             );
           } else {
             const pm = 'yarn'; // npx --no-install
-            await spawn(husky, [
-              'add',
-              '.husky/commit-msg',
-              `${pm} commitlint --edit $1`
-            ]);
+            await spawn(
+              husky,
+              ['add', '.husky/commit-msg', `${pm} commitlint --edit $1`],
+              { stdio: 'ignore' }
+            );
             spinner.succeed('commitlint git hook installed');
           }
         }
@@ -271,35 +276,47 @@ export default async function lassify({ cwd: _cwd }) {
   // lint-staged
   if (config.git['lint-staged']) {
     const husky = path.join(cwd, 'node_modules', '.bin', 'husky');
-    const lsrcPath = path.join(cwd, '.lintstagedrc.js');
+    // https://github.com/okonet/lint-staged/blob/master/lib/index.js#L27
+    let { filepath: lsrcPath } = await cosmiconfig('lint-staged', {
+      searchPlaces: [
+        'package.json',
+        '.lintstagedrc',
+        '.lintstagedrc.json',
+        '.lintstagedrc.yaml',
+        '.lintstagedrc.yml',
+        '.lintstagedrc.js',
+        '.lintstagedrc.cjs',
+        'lint-staged.config.js',
+        'lint-staged.config.cjs'
+      ],
+      stopDir: cwd
+    }).search(cwd);
+
     if (await pathExists(lsrcPath)) {
-      spinner.warn('.lintstagedrc.js already exists');
+      spinner.warn('A lint staged config already exists');
     } else {
+      lsrcPath = path.join(cwd, '.lintstagedrc');
       const lsrc = [
-        'module.exports = {',
-        '  "*.md,!test/snapshots/**/*.md,!test/**/snapshots/**/*.md,!locales/README.md": [',
-        // eslint-disable-next-line no-template-curly-in-string
-        '    filenames => filenames.map(filename => `remark ${filename} -qfo`)',
-        '  ],',
-        "  'package.json': 'fixpack',",
-        "  '*.js': 'xo --fix'",
-        '};'
+        '{',
+        '  "*.md,!test/**/*.md": "prettier --check",',
+        '  "package.json": "fixpack --dryrun",',
+        '  "*.js": "xo --fix"',
+        '}'
       ];
 
       await fs.writeFile(lsrcPath, lsrc.join('\n'));
+      spinner.succeed('lint-staged installed successfully!');
     }
 
     // install commitlint husky hook
     if (await pathExists(path.join(cwd, '.husky', 'pre-commit'))) {
-      spinner.warn('There is already a commit-msg hook installed for husky');
+      spinner.warn('There is already a pre-commit hook installed for husky');
     } else {
       const pm = 'yarn'; // npx --no-install
-      await spawn(husky, ['add', '.husky/pre-commit', `${pm} lint-staged`]);
-      spinner.succeed('commitlint git hook installed');
+      await spawn(husky, ['add', '.husky/pre-commit', `${pm} lint-staged`], {
+        stdio: 'ignore'
+      });
+      spinner.succeed('lint-staged git hook installed');
     }
   }
-
-  // remark
-
-  // prettier
 }

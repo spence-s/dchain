@@ -1,7 +1,5 @@
 module.exports = {
-  "*.md,!test/**/*.md": [
-    filenames => filenames.map(filename => `remark ${filename} -qfo`)
-  ],
-  'package.json': 'fixpack',
+  "*.md,!test/**/*.md": "prettier --check",
+  'package.json': 'fixpack --dryrun',
   '*.js': 'xo --fix'
 };

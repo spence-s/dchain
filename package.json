@@ -1,5 +1,5 @@
 {
-  "name": "lass-cli",
+  "name": "lassify",
   "description": "cli for lass",
   "version": "0.0.0",
   "author": {
@@ -8,10 +8,10 @@
     "url": "https://spencersnyder.io"
   },
   "bin": {
-    "lass-cli": "src/cli.js"
+    "lassify": "src/cli.js"
   },
   "bugs": {
-    "url": "https://github.com/Spence-S/lass-cli/issues",
+    "url": "https://github.com/Spence-S/lassify/issues",
     "email": "sasnyde2@gmail.com"
   },
   "contributors": [
@@ -52,38 +52,32 @@
     "ava": "latest",
     "codecov": "latest",
     "cross-env": "latest",
-    "eslint": "latest",
-    "eslint-config-xo-lass": "latest",
     "fixpack": "latest",
     "husky": "latest",
     "lint-staged": "latest",
     "nyc": "latest",
-    "remark-cli": "latest",
-    "remark-preset-github": "latest",
-    "remark-preset-lint-markdown-style-guide": "latest",
-    "remark-preset-lint-recommended": "latest",
-    "remark-preset-prettier": "latest",
     "xo": "latest"
   },
   "engines": {
     "node": ">= 10"
   },
-  "homepage": "https://github.com/Spence-S/lass-cli",
+  "homepage": "https://github.com/Spence-S/lassify",
   "keywords": [
     "lass",
-    "lass-cli"
+    "lassify"
   ],
   "license": "MIT",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Spence-S/lass-cli.git"
+    "url": "git+https://github.com/Spence-S/lassify.git"
   },
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "yarn run lint:js && yarn run lint:md",
-    "lint:js": "xo ",
-    "lint:md": "remark . -qfo",
+    "lint": "yarn run lint:js && yarn run lint:md && yarn run lint:package",
+    "lint:js": "xo",
+    "lint:md": "prettier --check **/*.md",
+    "lint:package": "fixpack --dryrun",
     "pretest": "yarn run lint",
     "test": "cross-env NODE_ENV=test ava",
     "test-coverage": "cross-env NODE_ENV=test nyc yarn run test"

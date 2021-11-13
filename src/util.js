@@ -9,8 +9,8 @@ export const dirname = (metaUrl) => path.dirname(fileURLToPath(metaUrl));
 
 export const getCtx = (rel) => path.join(process.cwd(), rel || '');
 
-export const createSpawn = (options) => (cmd, args) =>
-  execa(cmd, args, { stdio: 'inherit', ...options });
+export const createSpawn = (instanceOptions) => (cmd, args, runOptions) =>
+  execa(cmd, args, { stdio: 'inherit', ...instanceOptions, ...runOptions });
 
 /**
  * Determine if an object is empty or not
