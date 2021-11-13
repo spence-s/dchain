@@ -1,6 +1,5 @@
-const test = require('ava');
-
-const Script = require('..');
+import test from 'ava';
+import Script from '../src/cli.js';
 
 test.beforeEach((t) => {
   const script = new Script({});

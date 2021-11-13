@@ -1,0 +1,11 @@
+{
+  "prettier": true,
+  "rules": {
+    "capitalized-comments": "off",
+    "unicorn/no-array-reduce": "off",
+    "no-warning-comments": "off",
+    "unicorn/prefer-object-from-entries": "off",
+    "max-depth": "off",
+    "complexity": "off"
+  }
+}

@@ -3,12 +3,10 @@
     ".js"
   ],
   "report-dir": "./coverage",
-
   "temp-dir": "./.nyc_output",
   "check-coverage": true,
   "lines": 60,
   "functions": 60,
   "branches": 60,
   "reporter": ["lcov", "html", "text"]
-
 }

@@ -2,15 +2,50 @@
   "name": "lass-cli",
   "description": "cli for lass",
   "version": "0.0.0",
-  "author": "Spencer Snyder <sasnyde2@gmail.com> (https://spencersnyder.io)",
+  "author": {
+    "name": "Spencer Snyder",
+    "email": "sasnyde2@gmail.com",
+    "url": "https://spencersnyder.io"
+  },
+  "bin": {
+    "lass-cli": "src/cli.js"
+  },
   "bugs": {
     "url": "https://github.com/Spence-S/lass-cli/issues",
     "email": "sasnyde2@gmail.com"
   },
   "contributors": [
-    "Spencer Snyder <sasnyde2@gmail.com> (https://spencersnyder.io)"
+    {
+      "name": "Spencer Snyder",
+      "email": "sasnyde2@gmail.com",
+      "url": "https://spencersnyder.io"
+    }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "cosmiconfig": "^7.0.1",
+    "debug": "^4.3.2",
+    "execa": "^5.1.1",
+    "fs-extra": "^10.0.0",
+    "github-username": "^7.0.0",
+    "github-username-regex": "^1.0.0",
+    "globby": "^12.0.2",
+    "is-email": "^1.0.2",
+    "is-string-and-not-blank": "^0.0.2",
+    "is-url": "^1.2.4",
+    "is-valid-npm-name": "^0.0.5",
+    "lodash": "^4.17.21",
+    "meow": "^10.1.1",
+    "npm-check-updates": "^12.0.2",
+    "npm-conf": "^1.1.3",
+    "ora": "^6.0.1",
+    "path-exists": "^5.0.0",
+    "prompts": "^2.4.2",
+    "read-pkg-up": "^9.0.0",
+    "semver": "^7.3.5",
+    "spdx-license-list": "^6.4.0",
+    "speakingurl": "^14.0.1",
+    "superb": "^4.0.0"
+  },
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
@@ -25,7 +60,10 @@
     "nyc": "latest",
     "remark-cli": "latest",
     "remark-preset-github": "latest",
-    "xo": "^0.39.1"
+    "remark-preset-lint-markdown-style-guide": "latest",
+    "remark-preset-lint-recommended": "latest",
+    "remark-preset-prettier": "latest",
+    "xo": "latest"
   },
   "engines": {
     "node": ">= 10"
@@ -39,7 +77,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Spence-S/lass-cli"
+    "url": "git+https://github.com/Spence-S/lass-cli.git"
   },
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
@@ -50,11 +88,5 @@
     "test": "cross-env NODE_ENV=test ava",
     "test-coverage": "cross-env NODE_ENV=test nyc yarn run test"
   },
-  "xo": {
-    "prettier": true,
-    "space": true,
-    "extends": [
-      "xo-lass"
-    ]
-  }
+  "type": "module"
 }

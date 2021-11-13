@@ -1,0 +1,24 @@
+{
+  "git": {
+    "init": true,
+    "ignore": true,
+    "husky": true,
+    "lint-staged": true,
+    "commitlint": true
+  },
+  "md": {
+    "remark": true,
+    "prettier": true
+  },
+  "js": {
+    "xo": true,
+    "eslint": false,
+    "prettier": true
+  },
+  "package": true,
+  "test": {
+    "coverage": true,
+    "coverageThreshold": true,
+    "ava": true
+  }
+}
