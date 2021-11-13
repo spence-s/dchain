@@ -11,9 +11,6 @@ import { pathExists } from 'path-exists';
 import { isEmpty, pick, isObject, createSpawn } from './util.js';
 import { defaultConfig } from './managed-deps.js';
 
-// import chalk from 'chalk';
-// const __dirname = dirname(import.meta.url);
-
 export default async function lassify({ cwd: _cwd }) {
   const cwd = _cwd || process.cwd();
 

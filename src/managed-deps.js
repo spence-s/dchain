@@ -1,15 +1,11 @@
 export const MANAGED_DEPS = [
   'husky',
   'xo',
-  'eslint',
   '@commitlint/cli',
   '@commitlint/config-conventional',
-  'eslint-config-xo-lass',
   'fixpack',
   'nyc',
-  'prettier',
-  'stylelint',
-  'stylelint-config-xo'
+  'ava'
 ];
 
 export const defaultConfig = {

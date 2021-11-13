@@ -33,13 +33,8 @@ yarn add lassify
 
 ## Usage
 
-```js
-const LassCli = require('lassify');
-
-const lassCli = new LassCli();
-
-console.log(lassCli.renderName());
-// script
+```sh
+lassify
 ```
 
 ## Contributors
