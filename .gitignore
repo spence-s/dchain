@@ -6,11 +6,9 @@ Thumbs.db
 tmp/
 temp/
 
-
 #     Node.js     #
 ###################
 node_modules
-
 
 #       NYC       #
 ###################
@@ -18,7 +16,8 @@ coverage
 *.lcov
 .nyc_output
 
-
 #      Files      #
 ###################
 *.log
+
+test/temp

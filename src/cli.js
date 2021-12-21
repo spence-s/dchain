@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import process from 'node:process';
 import meow from 'meow';
-import lassify from './lassify.js';
+import Lassify from './lassify.js';
 
 const cli = meow(
   `
@@ -11,7 +11,9 @@ const cli = meow(
       $ lassify [options]
 
     Options
-      --cwd   Optional directory to run the cli from. Defaults to process.cwd().
+      --cwd      Optional directory to run the cli from. Defaults to process.cwd().
+      --silent   Suppress all output from cli
+      --yes, -y  Answer yes to all upgrade prompts
 
     Examples
       $ lassify
@@ -22,15 +24,13 @@ const cli = meow(
     autoVersion: false,
     booleanDefault: undefined,
     flags: {
-      new: {
+      cwd: {
         type: 'string'
       },
-      init: {
-        type: 'boolean'
-      },
-      template: {
-        type: 'string',
-        alias: 't'
+      yes: {
+        type: 'boolean',
+        default: false,
+        alias: 'y'
       }
     }
   }
@@ -38,8 +38,7 @@ const cli = meow(
 
 (async () => {
   try {
-    await lassify(cli.flags);
-
+    await new Lassify(cli.flags).run();
     process.exit(0);
   } catch (error) {
     console.error(error);
