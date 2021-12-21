@@ -3,26 +3,41 @@ import { readPackageUp } from 'read-pkg-up';
 import { loadJsonFile } from 'load-json-file';
 import { cosmiconfig } from 'cosmiconfig';
 import ncu from 'npm-check-updates';
-import { defaultConfig } from '../helpers/managed-deps.js';
+import { pathExists } from 'path-exists';
 import * as _ from '../helpers/_.js';
 
-async function init() {
+async function initialize() {
   const debug = this.debug.extend('init');
   this.spinner.start('Initializing lassify!');
 
   // find config or use default
-  if (this.configPath) {
-    const config = await loadJsonFile(this.configPath);
-    this.config = Object.freeze(config);
-  } else {
-    const { config = this.config, filepath: configPath } = (await cosmiconfig(
-      'lass'
-    ).search(this.cwd)) || {
-      config: defaultConfig
-    };
-    this.configPath = configPath;
-    this.config = Object.freeze(config);
-  }
+  if (typeof this.config === 'undefined')
+    if (this.configPath) {
+      const config = await loadJsonFile(this.configPath);
+      this.config = Object.freeze(config);
+    } else {
+      const { config = this.config, filepath: configPath } = (await cosmiconfig(
+        'lass'
+      ).search(this.cwd)) || {
+        config: this.defaultConfig
+      };
+      this.configPath = configPath;
+      this.config = Object.freeze(config);
+    }
+
+  // all the dependencies we should take care of
+  for (const conf of Object.keys(this.config))
+    this.managedDependencies = [
+      ...(this.managedDependencies || []),
+      ...(Array.isArray(this.configMap[conf])
+        ? this.configMap[conf]
+        : [this.configMap[conf]])
+    ].filter(Boolean);
+
+  if (this.managedDependencies.length === 0)
+    throw new Error(
+      'Configuration must have at least 1 dependency for lassify to manage'
+    );
 
   debug('found and cached config');
 
@@ -42,11 +57,6 @@ async function init() {
 
   debug('found and cached packageJson for %s', pkgPath);
 
-  const dependencies = {
-    ...packageJson.devDependencies,
-    ...packageJson.dependencies
-  };
-
   debug('retreiving ncu results');
 
   this.ncuResults =
@@ -55,7 +65,7 @@ async function init() {
       loglevel: 'silent',
       packageData: {
         devDependencies: Object.fromEntries(
-          Object.keys(this.config).map((dep) => [dep, '^0.0.0'])
+          this.managedDependencies.map((dep) => [dep, '^0.0.0'])
         )
       }
     }));
@@ -64,7 +74,13 @@ async function init() {
 
   // cache the original dependencies, and make sure we can't change them again
   this.originalDependencies = Object.freeze(
-    _.pick(dependencies, Object.keys(this.config))
+    _.pick(
+      {
+        ...packageJson.devDependencies,
+        ...packageJson.dependencies
+      },
+      this.managedDependencies
+    )
   );
 
   debug('original dependencies %O', this.originalDependencies);
@@ -73,11 +89,13 @@ async function init() {
   this.promptAnswers = {};
 
   // const figure out package manager
-  this.pm = 'yarn';
+  this.pm = (await pathExists(path.join(this.cwd, 'yarn.lock')))
+    ? 'yarn'
+    : 'npx';
 
   this.spinner.succeed('Lassify initialized successfully!');
 
   return this;
 }
 
-export default init;
+export default initialize;

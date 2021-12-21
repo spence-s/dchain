@@ -18,3 +18,11 @@ export const defaultConfig = {
   xo: true,
   ava: true
 };
+
+export const configMap = {
+  package: 'fixpack',
+  husky: 'husky',
+  commitlint: ['@commitlint/cli', '@commitlint/config-conventional'],
+  xo: 'xo',
+  lintStaged: 'lint-staged'
+};

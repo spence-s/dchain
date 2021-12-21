@@ -11,18 +11,26 @@ import manageHusky from './modules/husky.js';
 
 import ora from './helpers/ora-debug-redirect.js';
 import writePackageJson from './helpers/write-package-file.js';
+import { configMap, defaultConfig } from './helpers/config.js';
 
 class Lassify {
   constructor(options) {
     this.debug = debug('lassify');
     this.cwd = options.cwd ?? process.cwd();
     this.yes = options.yes || false;
+    this.configPath = options.config;
+
+    // todo: should remove these and just merge in manually in tests
     this.ncuResults = options._ncuResults;
     this.config = options._config;
-    this.configPath = options.config;
+
+    this.configMap = configMap;
+    this.defaultConfig = defaultConfig;
+
     this.spinner = ora({ isSilent: options.silent });
     this.spawn = (cmd, args, runOptions) =>
       execa(cmd, args, { stdio: 'inherit', cwd: this.cwd, ...runOptions });
+
     this.initialize = initialize.bind(this);
     this.manageGitInit = manageGitInit.bind(this);
     this.manageGitIgnore = manageGitIgnore.bind(this);
