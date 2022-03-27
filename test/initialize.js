@@ -19,14 +19,14 @@ test.afterEach.always(async (t) => {
   await t.context.tmpDir.cleanup();
 });
 
-test('throws when no package.json present in cwd', async (t) => {
+test('Does not throw when ran in empty dir', async (t) => {
   const { cwd } = t.context;
   const lassify = new Lassify({
     cwd,
     _ncuResults,
     silent: true
   });
-  await t.throwsAsync(lassify.initialize());
+  await t.notThrowsAsync(lassify.initialize());
 });
 
 test('uses default config if none present', async (t) => {
@@ -81,7 +81,10 @@ test('caches correct managed dependencies', async (t) => {
   });
 
   await lassify.initialize();
-  t.deepEqual(lassify.managedDependencies, Object.keys(_ncuResults));
+  t.deepEqual(
+    lassify.managedDependencies.sort(),
+    Object.keys(_ncuResults).sort()
+  );
   t.deepEqual(lassify.originalDependencies, {});
 });
 
@@ -102,9 +105,24 @@ test('caches correct original dependencies', async (t) => {
     silent: true
   });
   await lassify.initialize();
-  t.deepEqual(lassify.managedDependencies, Object.keys(_ncuResults));
+  t.deepEqual(
+    lassify.managedDependencies.sort(),
+    Object.keys(_ncuResults).sort()
+  );
   t.deepEqual(lassify.originalDependencies, {
     ...pkg.devDependencies,
     ...pkg.dependencies
   });
+});
+
+test('detects yarn package manager', async (t) => {
+  const { cwd } = t.context;
+  await copyFixture('yarn', cwd);
+  const lassify = new Lassify({
+    cwd,
+    _ncuResults,
+    silent: true
+  });
+  await lassify.initialize();
+  t.is(lassify.pm, 'yarn');
 });

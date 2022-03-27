@@ -2,22 +2,18 @@ import path from 'node:path';
 import { cosmiconfig } from 'cosmiconfig';
 import fs from 'fs-extra';
 import { pathExists } from 'path-exists';
-import { pick } from '../helpers/_.js';
 import { writeConf } from '../helpers/write-config-file.js';
 
 async function manageLintStaged() {
-  const { spinner, packageJson, spawn, configuredDeps } = this;
+  if (!this.config.lintStaged || !this.config.husky) return this;
 
-  const { devDependencies: devDeps, dependencies: deps } = packageJson;
-  const dependencies = { ...devDeps, ...deps };
-  const managedDeps = Object.keys(dependencies).filter((dep) =>
-    configuredDeps.includes(dep)
-  );
-  const installedManagedDeps = pick(dependencies, managedDeps);
+  const { spinner, spawn } = this;
+
+  // const debug = this.debug.extend('lint-staged');
 
   const shouldRemoveAdd =
-    installedManagedDeps['lint-staged'] &&
-    installedManagedDeps['lint-staged'] < 10;
+    this.originalDependencies['lint-staged'] &&
+    this.originalDependencies['lint-staged'] < 10;
 
   const husky = path.join(this.cwd, 'node_modules', '.bin', 'husky');
 
@@ -40,7 +36,7 @@ async function manageLintStaged() {
       stopDir: this.cwd
     }).search(this.cwd)) || {};
 
-  if (await pathExists(lsrcPath)) {
+  if (lsrcPath && (await pathExists(lsrcPath))) {
     spinner.warn('A lint staged config already exists');
     if (shouldRemoveAdd) {
       spinner.start('Migrating lint-staged config for you!');
@@ -84,10 +80,17 @@ async function manageLintStaged() {
   if (await pathExists(path.join(this.cwd, '.husky', 'pre-commit'))) {
     spinner.warn('There is already a pre-commit hook installed for husky');
   } else if (hasHusky) {
-    const pm = 'yarn'; // npx --no-install
-    await spawn(husky, ['add', '.husky/pre-commit', `${pm} lint-staged`], {
-      stdio: 'ignore'
-    });
+    await spawn(
+      husky,
+      [
+        'add',
+        '.husky/pre-commit',
+        `${this.pm === 'npm' ? 'npx' : 'yarn'} lint-staged`
+      ],
+      {
+        stdio: 'ignore'
+      }
+    );
     spinner.succeed('lint-staged git hook installed');
   } else {
     spinner.warn('husky is not installed so no commit hook was installed');

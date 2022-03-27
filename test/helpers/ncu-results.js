@@ -1,7 +1,10 @@
-export const _ncuResults = {
-  fixpack: '^1.0.0',
-  husky: '^1.0.0',
-  '@commitlint/cli': '^1.0.0',
-  '@commitlint/config-conventional': '^1.0.0',
-  xo: '^1.0.0'
-};
+import { configMap } from '../../src/helpers/config.js';
+
+const testVersion = '^1.0.0';
+
+export const _ncuResults = {};
+
+for (const [, dep] of Object.entries(configMap)) {
+  if (Array.isArray(dep)) for (const d of dep) _ncuResults[d] = testVersion;
+  else _ncuResults[dep] = testVersion;
+}

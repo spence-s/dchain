@@ -48,9 +48,9 @@ async function manageHusky() {
   debug('checking for husky upgrade path if needed.');
 
   let huskyUpgradePath;
-  if (semver.subset(this.originalDependencies.husky, '0'))
+  if (semver.subset(this.originalDependencies?.husky ?? '', '0'))
     huskyUpgradePath = '0';
-  else if (semver.subset(this.originalDependencies.husky, '1 - 4'))
+  else if (semver.subset(this.originalDependencies?.husky ?? '', '1 - 4'))
     huskyUpgradePath = '1';
 
   if (huskyUpgradePath) {
@@ -112,7 +112,9 @@ async function manageHusky() {
         await husky([
           'add',
           `.husky/${hook}`,
-          `${this.pm} ${command.replace('HUSKY_GIT_PARAMS', '$1')}`
+          `${this.pm} ${command
+            .replace('HUSKY_GIT_PARAMS', '$1')
+            .replace('-E', '--edit')}`
         ]);
 
         spinner.succeed();
@@ -125,7 +127,8 @@ async function manageHusky() {
         this.writePackageJson();
       }
     }
-  } else if (this.config?.git?.commitlint) {
+  } else if (this.config.commitlint) {
+    debug('install commitlint husky hook');
     // install commitlint husky hook
     if (await pathExists(path.join(this.cwd, '.husky', 'commit-msg'))) {
       spinner.warn('There is already a commit-msg hook installed for husky');

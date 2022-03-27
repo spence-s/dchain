@@ -34,13 +34,12 @@ async function gitIgnore() {
     spinner.warn('A custom .gitignore has already been created.');
 
     // merge in our ignore
-    const currentGitIgnore = await [
-      ...(
-        await fs.readFile(gitIgnorePath)
-      )
+    const currentGitIgnore = [
+      ...(await fs.readFile(gitIgnorePath))
         // eslint-disable-next-line unicorn/no-await-expression-member
         .toString()
         .split('\n')
+
         .map((line) => line.trim()),
       ''
     ];

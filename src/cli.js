@@ -18,6 +18,8 @@ const cli = meow(
     Examples
       $ lassify
       $ lassify --cwd '../other/directory'
+      $ lassify --silent
+      $ lassify -y
 `,
   {
     importMeta: import.meta,
@@ -40,8 +42,7 @@ const cli = meow(
   try {
     await new Lassify(cli.flags).run();
     process.exit(0);
-  } catch (error) {
-    console.error(error);
+  } catch {
     process.exit(1);
   }
 })();

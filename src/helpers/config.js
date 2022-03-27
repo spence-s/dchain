@@ -1,3 +1,4 @@
+// currently not used
 export const MANAGED_DEPS = [
   'husky',
   'xo',
@@ -24,5 +25,6 @@ export const configMap = {
   husky: 'husky',
   commitlint: ['@commitlint/cli', '@commitlint/config-conventional'],
   xo: 'xo',
-  lintStaged: 'lint-staged'
+  lintStaged: 'lint-staged',
+  ava: 'ava'
 };

@@ -36,6 +36,7 @@ async function manageDependencies() {
     .filter(Boolean);
 
   spinner.stop();
+  debug('questions answered');
 
   if (this.yes) prompts.inject(questions.map(() => true));
 
@@ -97,7 +98,7 @@ async function manageDependencies() {
     spinner.succeed(
       'Installing new and/or updated dependencies selected dependencies'
     );
-    await this.spawn('yarn', ['install']);
+    await this.spawn(this.pm, ['install']);
     spinner.stop();
 
     spinner.succeed('Dependencies installed!');

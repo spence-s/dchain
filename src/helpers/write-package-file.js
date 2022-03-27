@@ -4,7 +4,7 @@ import prettier from 'prettier';
 async function writePackageFile() {
   const prettierConfig =
     (await prettier.resolveConfig(this.pkgPath, {
-      eidtorConfig: true,
+      editorConfig: true,
       useCache: false
     })) || {};
 

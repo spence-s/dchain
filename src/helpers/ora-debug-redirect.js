@@ -12,8 +12,9 @@ function oraDebugRedirect(oraOptions) {
   const fakeOra = {};
   const oraLogger = debugLogger.extend('ora');
   if (debugLogger.enabled) {
-    for (const method of ['start', 'stop', 'warn', 'succeed', 'fail']) {
-      fakeOra[method] = oraLogger;
+    for (const method of ['start', 'stop', 'warn', 'succeed', 'fail', 'info']) {
+      fakeOra[method] = (...args) =>
+        args.length > 0 ? oraLogger(...args) : null;
     }
 
     return fakeOra;
