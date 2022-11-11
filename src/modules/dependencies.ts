@@ -1,9 +1,12 @@
 import prompts from 'prompts';
-import isSANB from 'is-string-and-not-blank';
-// import semver from 'semver';
-import { isEmpty, pick } from '../helpers/_.js';
 
-async function manageDependencies() {
+import type { Answers, PromptObject } from 'prompts';
+import type { PackageJson } from 'type-fest';
+
+import { isEmpty, pick } from '../helpers/_.js';
+import type Lassify from '../lassify.js';
+
+async function manageDependencies(this: Lassify) {
   const debug = this.debug.extend('dependencies');
   const { spinner, packageJson } = this;
 
@@ -11,11 +14,11 @@ async function manageDependencies() {
   const { devDependencies: devDeps = {}, dependencies: deps = {} } =
     packageJson;
 
-  let newPackageJsonDevDeps = {};
-  let newPackageJsonDeps = {};
+  let newPackageJsonDevDeps: PackageJson.Dependency = {};
+  let newPackageJsonDeps: PackageJson.Dependency = {};
 
   const questions = Object.entries(this.ncuResults)
-    .map(([dep, semverValue]) => {
+    .map(([dep, semverValue]): PromptObject | undefined => {
       if (typeof this.originalDependencies[dep] === 'undefined')
         return {
           type: 'confirm',
@@ -27,13 +30,15 @@ async function manageDependencies() {
         return {
           type: 'confirm',
           name: dep,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           message: `  Update ${dep} from ${this.originalDependencies[dep]} -> ${semverValue}?`
         };
       }
 
-      return null;
+      return undefined;
     })
-    .filter(Boolean);
+
+    .filter((value): value is PromptObject => value !== undefined);
 
   spinner.stop();
   debug('questions answered');
@@ -44,8 +49,9 @@ async function manageDependencies() {
   this.promptAnswers = await prompts(questions);
 
   // filter out false answers
-  const promptAnswers = pick(this.promptAnswers, (key, value) =>
-    Boolean(value)
+  const promptAnswers: Answers<string> = pick(
+    this.promptAnswers,
+    (key: string, value: unknown): value is true => Boolean(value)
   );
 
   debug('prompt answers %O', promptAnswers);
@@ -59,21 +65,24 @@ async function manageDependencies() {
   if (Object.keys(promptAnswers).length > 0) {
     const answersEntries = Object.entries(promptAnswers);
 
-    newPackageJsonDevDeps = answersEntries.reduce(
+    newPackageJsonDevDeps = answersEntries.reduce<PackageJson.Dependency>(
       (acc, [key, shouldUpdate]) => {
-        if (isSANB(deps[key])) return acc;
+        if (typeof deps[key] === 'string') return acc;
         acc[key] = shouldUpdate ? this.ncuResults[key] : devDeps[key];
         return acc;
       },
       {}
     );
 
-    newPackageJsonDeps = answersEntries.reduce((acc, [key, shouldUpdate]) => {
-      if (isSANB(deps[key]))
-        acc[key] = shouldUpdate ? this.ncuResults[key] : deps?.[key];
+    newPackageJsonDeps = answersEntries.reduce<PackageJson.Dependency>(
+      (acc, [key, shouldUpdate]) => {
+        if (typeof deps[key] === 'string')
+          acc[key] = shouldUpdate ? this.ncuResults[key] : deps?.[key];
 
-      return acc;
-    }, {});
+        return acc;
+      },
+      {}
+    );
   }
 
   if (shouldUpdatePackage) {
@@ -89,15 +98,13 @@ async function manageDependencies() {
         ...newPackageJsonDeps
       }
     };
-    this.packageJson = newPackageJson;
+    this.packageJson = newPackageJson as PackageJson;
     await this.writePackageJson();
     spinner.succeed('Package updated!');
   }
 
   if (shouldDownload) {
-    spinner.succeed(
-      'Installing new and/or updated dependencies selected dependencies'
-    );
+    spinner.succeed('Installing new and/or updated dependencies');
     await this.spawn(this.pm, ['install']);
     spinner.stop();
 

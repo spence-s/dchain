@@ -40,7 +40,7 @@ const cli = meow(
 
 (async () => {
   try {
-    await new Lassify(cli.flags).run();
+    await new Lassify().run();
     process.exit(0);
   } catch {
     process.exit(1);

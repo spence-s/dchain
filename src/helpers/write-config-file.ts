@@ -1,14 +1,20 @@
 import path from 'node:path';
-import fs from 'fs-extra';
+import fs from 'node:fs/promises';
 import prettier from 'prettier';
+import type { PackageJson } from 'type-fest';
 
-export const writeConf = async (conf, filePath, packageJson) => {
+export const writeConf = async (
+  conf: Record<string, unknown>,
+  filePath: string,
+  packageJson: PackageJson
+): Promise<void> => {
   const prettierConfig =
     (await prettier.resolveConfig(filePath, {
-      eidtorConfig: true,
+      editorconfig: true,
       useCache: false
-    })) || {};
+    })) ?? {};
 
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const isESM = packageJson.type === 'module';
   const ext = path.extname(filePath);
 
@@ -31,5 +37,5 @@ export const writeConf = async (conf, filePath, packageJson) => {
     text = prettier.format(JSON.stringify(conf), prettierConfig);
   }
 
-  await fs.writeFile(filePath, text);
+  if (text) await fs.writeFile(filePath, text);
 };

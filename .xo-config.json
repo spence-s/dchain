@@ -6,6 +6,14 @@
     "no-warning-comments": "off",
     "unicorn/prefer-object-from-entries": "off",
     "max-depth": "off",
-    "complexity": "off"
-  }
+    "complexity": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off"
+  },
+  "overrides": [
+    {
+      "files": "quokka.js",
+      "prettier": false
+    }
+  ]
 }

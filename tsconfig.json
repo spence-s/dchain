@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "target": "ES2022",
+    "allowJs": true,
+    "strict": true,
+    "rootDir": ".",
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

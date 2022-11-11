@@ -1,32 +1,36 @@
 import path from 'node:path';
 import { readPackageUp } from 'read-pkg-up';
-import { loadJsonFile } from 'load-json-file';
+import { JsonValue, loadJsonFile } from 'load-json-file';
 import { cosmiconfig } from 'cosmiconfig';
 import ncu from 'npm-check-updates';
 import { pathExists } from 'path-exists';
+
+import type { PackageJson } from 'type-fest';
+
 import * as _ from '../helpers/_.js';
+import type { Lassify, Config } from '../lassify.js';
 
 /**
  * Finds or creates the package.json for the current working dir.
  * @returns this
  */
-async function initialize() {
+async function initialize(this: Lassify) {
   const debug = this.debug.extend('init');
   this.spinner.start('Initializing lassify!');
 
   // find config or use default
   if (typeof this.config === 'undefined')
     if (this.configPath) {
-      const config = await loadJsonFile(this.configPath);
+      const config = await loadJsonFile<Config>(this.configPath);
       this.config = Object.freeze(config);
       debug('found passed config');
     } else {
       debug('searching for config');
       const { config = this.config, filepath: configPath } =
-        (await cosmiconfig('lass').search(this.cwd)) ||
+        (await cosmiconfig('lass').search(this.cwd)) ??
         (() => {
           debug('using default config');
-          return { config: this.defaultConfig };
+          return { config: this.defaultConfig, filepath: undefined };
         })();
       this.configPath = configPath;
       this.config = Object.freeze(config);
@@ -34,15 +38,18 @@ async function initialize() {
     }
 
   // all the dependencies we should take care of
-  for (const conf of Object.keys(this.config))
-    this.managedDependencies = [
-      ...(this.managedDependencies || []),
+  for (const conf of Object.keys(this.config)) {
+    // eslint-disable-next-line unicorn/prefer-spread
+    this.managedDependencies = this.managedDependencies.concat(
       ...(Array.isArray(this.configMap[conf])
         ? this.configMap[conf]
         : [this.configMap[conf]])
-    ].filter(Boolean);
+    );
 
-  if (this.managedDependencies.length === 0)
+    this.managedDependencies = this.managedDependencies.filter(Boolean);
+  }
+
+  if (this.managedDependencies?.length === 0)
     throw new Error(
       'Configuration must have at least 1 dependency for lassify to manage'
     );
@@ -50,11 +57,13 @@ async function initialize() {
   debug('cached config');
 
   // find the package.json - must be in this dir
-  const { path: pkgPath, packageJson } = (await readPackageUp({
+  const { path: pkgPath, packageJson } = ((await readPackageUp({
     cwd: this.cwd,
-    normalize: false,
-    stopAt: this.cwd
-  })) || { path: path.join(this.cwd, 'package.json'), packageJson: {} };
+    normalize: false
+  })) ?? { path: path.join(this.cwd, 'package.json'), packageJson: {} }) as {
+    path: string;
+    packageJson: PackageJson;
+  };
 
   debug('package %O', packageJson);
 

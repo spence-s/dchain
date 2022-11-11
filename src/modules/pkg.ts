@@ -1,10 +1,11 @@
 import { sep } from 'node:path';
 import prompts from 'prompts';
-import isSANB from 'is-string-and-not-blank';
 import validateNpm from 'validate-npm-package-name';
 import * as _ from '../helpers/_.js';
 
-async function pkg() {
+import type Lassify from '../lassify.js';
+
+async function pkg(this: Lassify) {
   const debug = this.debug.extend('pkg');
   const { spinner } = this;
 
@@ -14,7 +15,7 @@ async function pkg() {
     spinner.warn('Initializing new package.json');
 
   if (
-    !isSANB(this.packageJson.name) ||
+    !this.packageJson?.name ||
     !validateNpm(this.packageJson.name).validForNewPackages
   ) {
     debug('asking for name');
@@ -36,7 +37,7 @@ async function pkg() {
     await this.writePackageJson();
   }
 
-  if (!isSANB(this.packageJson.description)) {
+  if (!this.packageJson?.description) {
     debug('asking for description');
     const { description } = await prompts({
       type: 'text',
@@ -54,9 +55,9 @@ async function pkg() {
     await this.writePackageJson();
   }
 
-  if (!isSANB(this.pm)) {
+  if (!this.pm) {
     debug('asking for package manager');
-    const choices = ['npm', 'yarn'];
+    const choices = [{ title: 'npm' }, { title: 'yarn' }];
     const { pm } = await prompts({
       name: 'pm',
       message: '  Choose a package manager',
@@ -67,7 +68,7 @@ async function pkg() {
 
     debug('package manager %s', choices[pm]);
 
-    this.pm = choices[pm];
+    this.pm = choices[pm]?.title as typeof this.pm;
   }
 }
 

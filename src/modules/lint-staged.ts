@@ -1,10 +1,11 @@
 import path from 'node:path';
+import fs from 'node:fs/promises';
 import { cosmiconfig } from 'cosmiconfig';
-import fs from 'fs-extra';
 import { pathExists } from 'path-exists';
 import { writeConf } from '../helpers/write-config-file.js';
+import type Lassify from '../lassify.js';
 
-async function manageLintStaged() {
+async function manageLintStaged(this: Lassify) {
   if (!this.config.lintStaged || !this.config.husky) return this;
 
   const { spinner, spawn } = this;
@@ -34,7 +35,7 @@ async function manageLintStaged() {
         'lint-staged.config.cjs'
       ],
       stopDir: this.cwd
-    }).search(this.cwd)) || {};
+    }).search(this.cwd)) ?? {};
 
   if (lsrcPath && (await pathExists(lsrcPath))) {
     spinner.warn('A lint staged config already exists');
@@ -49,13 +50,13 @@ async function manageLintStaged() {
         })
       );
 
-      const { packageJson, pkgPath } = this.packageJson;
+      const { packageJson, pkgPath } = this;
 
       if (lsrcPath.includes('package.json')) {
         lsrcPath = lsrcPath.replace('package.json', '.lintstagedrc');
         await writeConf(newLsConf, lsrcPath, packageJson);
         delete packageJson['lint-staged'];
-        await fs.writeFile(pkgPath, packageJson);
+        await this.writePackageJson();
         spinner.succeed('Fixed and moved lint staged config to .lintstagedrc');
       } else {
         await writeConf(newLsConf, lsrcPath, packageJson);
@@ -67,7 +68,7 @@ async function manageLintStaged() {
     const lsrc = [
       '{',
       '  "*.md,!test/**/*.md": "prettier --check",',
-      '  "package.json": "fixpack --dryrun",',
+      '  "./package.json": "npmPkgJsonLint ./package.json && prettier --check --plugin=prettier-plugin-packagejson ./package.json",',
       '  "*.js": "xo --fix"',
       '}'
     ];

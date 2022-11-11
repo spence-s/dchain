@@ -1,10 +1,9 @@
-// currently not used
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const MANAGED_DEPS = [
   'husky',
   'xo',
   '@commitlint/cli',
   '@commitlint/config-conventional',
-  'fixpack',
   'nyc',
   'ava'
 ];
@@ -21,7 +20,11 @@ export const defaultConfig = {
 };
 
 export const configMap = {
-  package: 'fixpack',
+  package: [
+    'prettier-plugin-packagejson',
+    'npm-package-json-lint',
+    'npm-package-json-lint-config-default'
+  ],
   husky: 'husky',
   commitlint: ['@commitlint/cli', '@commitlint/config-conventional'],
   xo: 'xo',

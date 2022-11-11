@@ -1,8 +1,9 @@
 import path from 'node:path';
-import fs from 'fs-extra';
+import fs from 'node:fs/promises';
 import { pathExists } from 'path-exists';
+import type Lassify from '../lassify.js';
 
-async function gitIgnore() {
+async function gitIgnore(this: Lassify) {
   const debug = this.debug.extend('editor-config');
   const { spinner } = this;
   const editorconfigPath = path.join(this.cwd, '.editorconfig');
@@ -47,7 +48,10 @@ async function gitIgnore() {
     currentGitIgnore.push('');
 
     if (isChanged) {
-      await fs.writeFile(defaultEditorConfig, currentGitIgnore.join('\n'));
+      await fs.writeFile(
+        defaultEditorConfig.join('\n'),
+        currentGitIgnore.join('\n')
+      );
       spinner.succeed('Fixed .editorconfig!');
     } else {
       spinner.warn('No .editorconfig changes needed');

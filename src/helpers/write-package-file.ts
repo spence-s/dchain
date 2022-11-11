@@ -1,14 +1,16 @@
-import fs from 'fs-extra';
+import fs from 'node:fs/promises';
 import prettier from 'prettier';
+import type Lassify from '../lassify.js';
 
-async function writePackageFile() {
+async function writePackageFile(this: Lassify) {
   const prettierConfig =
     (await prettier.resolveConfig(this.pkgPath, {
-      editorConfig: true,
+      editorconfig: true,
       useCache: false
     })) || {};
 
   prettierConfig.parser = 'json-stringify';
+
   const text = prettier.format(
     JSON.stringify(this.packageJson),
     prettierConfig
