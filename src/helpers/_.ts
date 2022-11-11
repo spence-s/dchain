@@ -25,7 +25,6 @@ export const isObject = (object: Record<string, unknown>): boolean =>
   Object.prototype.toString.call(object) === '[object Object]';
 
 export const isEmpty = (object: unknown): boolean =>
-  object !== null &&
-  object !== undefined &&
-  Object.keys(object).length === 0 &&
-  object.constructor === Object;
+  object === null ||
+  object === undefined ||
+  (Object.keys(object).length === 0 && object.constructor === Object);

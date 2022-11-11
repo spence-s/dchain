@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { readPackageUp } from 'read-pkg-up';
-import { JsonValue, loadJsonFile } from 'load-json-file';
+import { loadJsonFile } from 'load-json-file';
 import { cosmiconfig } from 'cosmiconfig';
 import ncu from 'npm-check-updates';
 import { pathExists } from 'path-exists';
@@ -8,6 +8,7 @@ import { pathExists } from 'path-exists';
 import type { PackageJson } from 'type-fest';
 
 import * as _ from '../helpers/_.js';
+
 import type { Lassify, Config } from '../lassify.js';
 
 /**
@@ -19,7 +20,7 @@ async function initialize(this: Lassify) {
   this.spinner.start('Initializing lassify!');
 
   // find config or use default
-  if (typeof this.config === 'undefined')
+  if (_.isEmpty(this.config)) {
     if (this.configPath) {
       const config = await loadJsonFile<Config>(this.configPath);
       this.config = Object.freeze(config);
@@ -36,6 +37,7 @@ async function initialize(this: Lassify) {
       this.config = Object.freeze(config);
       debug('config resolved');
     }
+  }
 
   // all the dependencies we should take care of
   for (const conf of Object.keys(this.config)) {
@@ -53,6 +55,8 @@ async function initialize(this: Lassify) {
     throw new Error(
       'Configuration must have at least 1 dependency for lassify to manage'
     );
+
+  debug('%O', this.managedDependencies);
 
   debug('cached config');
 
@@ -79,16 +83,16 @@ async function initialize(this: Lassify) {
 
   debug('retreiving ncu results');
 
-  this.ncuResults =
-    this.ncuResults ??
-    (await ncu.run({
-      loglevel: 'silent',
-      packageData: {
-        devDependencies: Object.fromEntries(
-          this.managedDependencies.map((dep) => [dep, '^0.0.0'])
-        )
-      }
-    }));
+  this.ncuResults = _.isEmpty(this.ncuResults)
+    ? ((await ncu.run({
+        loglevel: 'silent',
+        packageData: {
+          devDependencies: Object.fromEntries(
+            this.managedDependencies.map((dep) => [dep, '^0.0.0'])
+          )
+        }
+      })) as PackageJson.Dependency)
+    : {};
 
   debug('retreived and cached ncuResults %O', this.ncuResults);
 

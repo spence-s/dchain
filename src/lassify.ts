@@ -66,7 +66,7 @@ export class Lassify {
   managedDependencies: string[];
 
   originalDependencies: Readonly<Record<string, unknown>>;
-  ncuResults: Record<string, string>;
+  ncuResults: PackageJson.Dependency;
   promptAnswers?: Answers<string>;
   pm: 'npm' | 'yarn' | '';
 

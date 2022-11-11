@@ -18,7 +18,8 @@ async function manageDependencies(this: Lassify) {
   let newPackageJsonDeps: PackageJson.Dependency = {};
 
   const questions = Object.entries(this.ncuResults)
-    .map(([dep, semverValue]): PromptObject | undefined => {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    .map(([dep, semverValue]): PromptObject | null => {
       if (typeof this.originalDependencies[dep] === 'undefined')
         return {
           type: 'confirm',
@@ -35,10 +36,12 @@ async function manageDependencies(this: Lassify) {
         };
       }
 
-      return undefined;
+      return null;
     })
 
-    .filter((value): value is PromptObject => value !== undefined);
+    .filter((value): value is PromptObject => value !== null);
+
+  debug('questions %O', questions);
 
   spinner.stop();
   debug('questions answered');
