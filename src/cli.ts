@@ -38,9 +38,10 @@ const cli = meow(
   }
 );
 
+// eslint-disable-next-line unicorn/prefer-top-level-await
 (async () => {
   try {
-    await new Lassify().run();
+    await new Lassify(cli.flags).run();
     process.exit(0);
   } catch {
     process.exit(1);

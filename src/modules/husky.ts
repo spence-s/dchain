@@ -3,6 +3,7 @@ import { pathExists } from 'path-exists';
 import { cosmiconfig } from 'cosmiconfig';
 import semver from 'semver';
 import type { PackageJson } from 'type-fest';
+import { writeConf } from '../helpers/write-config-file.js';
 import type Lassify from '../lassify.js';
 
 const hooks = [
@@ -122,7 +123,7 @@ async function manageHusky(this: Lassify) {
         await husky([
           'add',
           `.husky/${hook}`,
-          `${this.pm} ${command
+          `${this.pm === 'npm' ? 'npx' : this.pm} ${command
             .replace('HUSKY_GIT_PARAMS', '$1')
             .replace('-E', '--edit')}`
         ]);
@@ -146,9 +147,26 @@ async function manageHusky(this: Lassify) {
       await husky([
         'add',
         '.husky/commit-msg',
-        `${this.pm} commitlint --edit $1`
+        `${this.pm === 'npm' ? 'npx' : this.pm} commitlint --edit $1`
       ]);
       spinner.succeed('commitlint git hook installed');
+    }
+
+    const commitlintTemplate = {
+      extends: ['@commitlint/config-conventional']
+    };
+
+    const commitlintConfigPath = path.join(this.cwd, '.commitlintrc.json');
+
+    if (await pathExists(commitlintConfigPath)) {
+      this.spinner.warn('commitlint config already exists');
+    } else {
+      await writeConf(
+        commitlintTemplate,
+        commitlintConfigPath,
+        this.packageJson
+      );
+      this.spinner.succeed('added default commitlint config');
     }
   }
 }

@@ -4,7 +4,7 @@ import prettier from 'prettier';
 import type { PackageJson } from 'type-fest';
 
 export const writeConf = async (
-  conf: Record<string, unknown>,
+  conf: string | Record<string, unknown>,
   filePath: string,
   packageJson: PackageJson
 ): Promise<void> => {
@@ -24,15 +24,18 @@ export const writeConf = async (
       `module.exports = ${JSON.stringify(conf)}`,
       prettierConfig
     );
-  } else if (isESM || ext === '.mjs') {
+  } else if (isESM || ext.endsWith('.mjs')) {
     text = prettier.format(
       `export default ${JSON.stringify(conf)}`,
       prettierConfig
     );
-  } else if (ext === '.json' || ext === '') {
-    prettierConfig.parser = 'json5';
-    text = prettier.format(JSON.stringify(conf), prettierConfig);
-  } else if (ext === '.yaml' || ext === '.yml') {
+  } else if (ext.endsWith('.json') || ext === '') {
+    prettierConfig.parser = 'json';
+    text = prettier.format(
+      typeof conf === 'string' ? conf : JSON.stringify(conf),
+      prettierConfig
+    );
+  } else if (ext.endsWith('.yaml') || ext.endsWith('.yml')) {
     prettierConfig.parser = 'yaml';
     text = prettier.format(JSON.stringify(conf), prettierConfig);
   }

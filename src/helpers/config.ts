@@ -1,13 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const MANAGED_DEPS = [
-  'husky',
-  'xo',
-  '@commitlint/cli',
-  '@commitlint/config-conventional',
-  'nyc',
-  'ava'
-];
-
 export const defaultConfig = {
   package: true,
   gitInit: true,
@@ -16,7 +6,8 @@ export const defaultConfig = {
   lintStaged: true,
   commitlint: true,
   xo: true,
-  ava: true
+  ava: true,
+  typescript: true
 };
 
 export const configMap = {

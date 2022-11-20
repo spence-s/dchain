@@ -37,7 +37,7 @@ export type Config = {
 
 export type LassifyOptions = {
   debug?: Debugger;
-  cwd: string;
+  cwd?: string;
   yes?: boolean;
   _config?: Config;
   config?: string;
@@ -69,7 +69,6 @@ export class Lassify {
   ncuResults: PackageJson.Dependency;
   promptAnswers?: Answers<string>;
   pm: 'npm' | 'yarn' | '';
-
   writePackageJson: typeof writePackageJson;
   initialize: typeof initialize;
   managePkg: typeof managePkg;
@@ -83,29 +82,22 @@ export class Lassify {
   constructor(options?: LassifyOptions) {
     this.debug = debug('lassify');
     this.cwd = options?.cwd ? resolve(options.cwd) : process.cwd();
-
     this.debug(`cwd: ${this.cwd}`);
     this.yes = options?.yes ?? false;
     this.configPath = options?.config;
-
-    // todo: should remove these and just merge in manually in tests
     this.ncuResults = options?._ncuResults ?? {};
     this.config = options?._config ?? {};
-
     this.configMap = configMap;
     this.defaultConfig = defaultConfig;
-
     this.spinner = ora({ isSilent: options?.silent });
     this.spawn = (cmd, args, runOptions) =>
       execa(cmd, args, { stdio: 'inherit', cwd: this.cwd, ...runOptions });
-
     this.packageJson = {};
     this.originalPackageJson = {};
     this.originalDependencies = {};
     this.managedDependencies = [];
     this.pm = '';
     this.pkgPath = '';
-
     this.initialize = initialize.bind(this);
     this.manageGitInit = manageGitInit.bind(this);
     this.manageGitIgnore = manageGitIgnore.bind(this);
