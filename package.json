@@ -1,19 +1,19 @@
 {
-  "name": "lassify",
-  "version": "0.1.1",
-  "description": "cli for lass",
+  "name": "dchain",
+  "version": "0.0.1",
+  "description": "cli for managing development tool chains!",
   "keywords": [
     "lass",
     "lassify"
   ],
-  "homepage": "https://github.com/lassjs/lassify",
+  "homepage": "https://github.com/spence-s/dchain",
   "bugs": {
-    "url": "https://github.com/lassjs/lassify/issues",
+    "url": "https://github.com/spence-s/dchain/issues",
     "email": "sasnyde2@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lassjs/lassify.git"
+    "url": "git+https://github.com/spence-s/dchain.git"
   },
   "license": "MIT",
   "author": {
@@ -50,44 +50,44 @@
   },
   "dependencies": {
     "@types/debug": "^4.1.7",
-    "@types/prettier": "^2.7.1",
-    "cosmiconfig": "^7.0.1",
+    "@types/prettier": "^2.7.2",
+    "cosmiconfig": "^8.0.0",
     "debug": "^4.3.4",
     "execa": "^6.1.0",
     "load-json-file": "^7.0.1",
     "lodash": "^4.17.21",
-    "meow": "^10.1.3",
-    "npm-check-updates": "^15.3.4",
+    "meow": "^11.0.0",
+    "npm-check-updates": "^16.6.2",
     "npm-conf": "^1.1.3",
-    "npm-package-json-lint": "^6.3.0",
+    "npm-package-json-lint": "^6.4.0",
     "ora": "^6.1.2",
     "path-exists": "^5.0.0",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.3",
     "prompts": "^2.4.2",
     "read-pkg-up": "^9.1.0",
-    "semver": "^7.3.7",
+    "semver": "^7.3.8",
     "superb": "^4.0.0",
     "tmp-promise": "^3.0.3",
-    "validate-npm-package-name": "^4.0.0"
+    "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.2.0",
-    "@commitlint/config-conventional": "^17.2.0",
-    "@types/prompts": "^2.4.1",
+    "@commitlint/cli": "^17.4.2",
+    "@commitlint/config-conventional": "^17.4.2",
+    "@types/prompts": "^2.4.2",
     "@types/semver": "^7.3.13",
     "@types/validate-npm-package-name": "^4.0.0",
-    "ava": "^5.1.0",
+    "ava": "^5.1.1",
     "codecov": "^3.8.2",
     "cross-env": "latest",
-    "husky": "^8.0.2",
-    "lint-staged": "^13.0.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.0",
     "npm-package-json-lint-config-default": "^5.0.0",
     "nyc": "^15.1.0",
     "prettier-plugin-packagejson": "^2.3.0",
-    "sinon": "^14.0.0",
-    "type-fest": "^3.2.0",
-    "typescript": "^4.8.4",
-    "xo": "^0.53.0"
+    "sinon": "^15.0.1",
+    "type-fest": "^3.5.2",
+    "typescript": "^4.9.4",
+    "xo": "^0.53.1"
   },
   "engines": {
     "node": ">= 16"
