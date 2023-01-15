@@ -3,13 +3,13 @@ import test from 'ava';
 import tmp from 'tmp-promise';
 import fs from 'fs-extra';
 import sinon from 'sinon';
-import Lassify from '../src/lassify.js';
+import Dchain from '../src/dchain.js';
 import { _ncuResults } from './helpers/ncu-results.js';
 
 test.beforeEach(async (t) => {
   t.context.tmpDir = await tmp.dir({
     unsafeCleanup: true,
-    prefix: 'lassify-tests'
+    prefix: 'dchain-tests'
   });
   t.context.cwd = t.context.tmpDir.path;
 });
@@ -22,20 +22,20 @@ test('installs configured deps that are not present', async (t) => {
   const { cwd } = t.context;
   const pkg = {};
   await fs.writeFile(path.join(cwd, 'package.json'), JSON.stringify(pkg));
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true,
     yes: true
   });
-  await lassify.initialize();
-  lassify.spawn = sinon.fake();
-  lassify.writePackageJson = sinon.fake();
-  await lassify.manageDeps();
-  t.true(lassify.spawn.calledOnce);
-  t.true(lassify.writePackageJson.calledOnce);
-  t.deepEqual(lassify.packageJson.devDependencies, _ncuResults);
-  t.deepEqual(lassify.packageJson.dependencies, {});
+  await dchain.initialize();
+  dchain.spawn = sinon.fake();
+  dchain.writePackageJson = sinon.fake();
+  await dchain.manageDeps();
+  t.true(dchain.spawn.calledOnce);
+  t.true(dchain.writePackageJson.calledOnce);
+  t.deepEqual(dchain.packageJson.devDependencies, _ncuResults);
+  t.deepEqual(dchain.packageJson.dependencies, {});
 });
 
 test('installs configured deps that are not present and updates ones that are present', async (t) => {
@@ -46,20 +46,20 @@ test('installs configured deps that are not present and updates ones that are pr
     }
   };
   await fs.writeFile(path.join(cwd, 'package.json'), JSON.stringify(pkg));
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true,
     yes: true
   });
-  await lassify.initialize();
-  lassify.spawn = sinon.fake();
-  lassify.writePackageJson = sinon.fake();
-  await lassify.manageDeps();
-  t.true(lassify.spawn.calledOnce);
-  t.true(lassify.writePackageJson.calledOnce);
-  t.deepEqual(lassify.packageJson.devDependencies, _ncuResults);
-  t.deepEqual(lassify.packageJson.dependencies, {});
+  await dchain.initialize();
+  dchain.spawn = sinon.fake();
+  dchain.writePackageJson = sinon.fake();
+  await dchain.manageDeps();
+  t.true(dchain.spawn.calledOnce);
+  t.true(dchain.writePackageJson.calledOnce);
+  t.deepEqual(dchain.packageJson.devDependencies, _ncuResults);
+  t.deepEqual(dchain.packageJson.dependencies, {});
 });
 
 test('installs configured deps that are not present and updates ones that are present in dependencies', async (t) => {
@@ -70,19 +70,19 @@ test('installs configured deps that are not present and updates ones that are pr
     }
   };
   await fs.writeFile(path.join(cwd, 'package.json'), JSON.stringify(pkg));
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true,
     yes: true
   });
-  await lassify.initialize();
-  lassify.spawn = sinon.fake();
-  lassify.writePackageJson = sinon.fake();
-  await lassify.manageDeps();
-  t.true(lassify.spawn.calledOnce);
-  t.true(lassify.writePackageJson.calledOnce);
-  t.deepEqual(lassify.packageJson.dependencies, { xo: _ncuResults.xo });
+  await dchain.initialize();
+  dchain.spawn = sinon.fake();
+  dchain.writePackageJson = sinon.fake();
+  await dchain.manageDeps();
+  t.true(dchain.spawn.calledOnce);
+  t.true(dchain.writePackageJson.calledOnce);
+  t.deepEqual(dchain.packageJson.dependencies, { xo: _ncuResults.xo });
   const { xo, ...expectedDevDeps } = _ncuResults;
-  t.deepEqual(lassify.packageJson.devDependencies, expectedDevDeps);
+  t.deepEqual(dchain.packageJson.devDependencies, expectedDevDeps);
 });

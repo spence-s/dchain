@@ -5,9 +5,9 @@ import { pathExists } from 'path-exists';
 import * as _ from '../helpers/_.js';
 import { writeConf } from '../helpers/write-config-file.js';
 
-import type Lassify from '../lassify.js';
+import type Dchain from '../dchain.js';
 
-async function pkg(this: Lassify) {
+async function pkg(this: Dchain) {
   const debug = this.debug.extend('pkg');
   const { spinner } = this;
 

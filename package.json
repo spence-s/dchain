@@ -4,7 +4,7 @@
   "description": "cli for managing development tool chains!",
   "keywords": [
     "lass",
-    "lassify"
+    "dchain"
   ],
   "homepage": "https://github.com/spence-s/dchain",
   "bugs": {
@@ -31,7 +31,7 @@
   "type": "module",
   "main": "dist/src/cli.js",
   "bin": {
-    "lassify": "dist/src/cli.js"
+    "dchain": "dist/src/cli.js"
   },
   "scripts": {
     "build": "npm run clean && tsc --project tsconfig.json",

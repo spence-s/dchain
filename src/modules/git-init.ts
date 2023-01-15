@@ -1,8 +1,8 @@
 import path from 'node:path';
 import { pathExists } from 'path-exists';
-import type Lassify from '../lassify.js';
+import type Dchain from '../dchain.js';
 
-async function gitInit(this: Lassify) {
+async function gitInit(this: Dchain) {
   const debug = this.debug.extend('git-init');
   const { spinner, spawn } = this;
   debug('checking if git has been initialized');

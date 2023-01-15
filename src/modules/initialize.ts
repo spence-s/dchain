@@ -9,15 +9,15 @@ import type { PackageJson } from 'type-fest';
 
 import * as _ from '../helpers/_.js';
 
-import type { Lassify, Config } from '../lassify.js';
+import type { Dchain, Config } from '../dchain.js';
 
 /**
  * Finds or creates the package.json for the current working dir.
  * @returns this
  */
-async function initialize(this: Lassify) {
+async function initialize(this: Dchain) {
   const debug = this.debug.extend('init');
-  this.spinner.start('Initializing lassify!');
+  this.spinner.start('Initializing dchain!');
 
   // find config or use default
   if (_.isEmpty(this.config)) {
@@ -53,7 +53,7 @@ async function initialize(this: Lassify) {
 
   if (this.managedDependencies?.length === 0)
     throw new Error(
-      'Configuration must have at least 1 dependency for lassify to manage'
+      'Configuration must have at least 1 dependency for dchain to manage'
     );
 
   debug('%O', this.managedDependencies);
@@ -119,7 +119,7 @@ async function initialize(this: Lassify) {
     ? 'npm'
     : '';
 
-  this.spinner.succeed('Lassify initialized successfully!');
+  this.spinner.succeed('Dchain initialized successfully!');
 
   if (shouldSavePackage) {
     debug('saving package.json because we are in a directory without one.');

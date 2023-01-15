@@ -3,12 +3,12 @@ import test from 'ava';
 import tmp from 'tmp-promise';
 import fs from 'fs-extra';
 import { pathExists } from 'path-exists';
-import Lassify from '../src/lassify.js';
+import Dchain from '../src/dchain.js';
 
 test.beforeEach(async (t) => {
   t.context.tmpDir = await tmp.dir({
     unsafeCleanup: true,
-    prefix: 'lassify-tests'
+    prefix: 'dchain-tests'
   });
   t.context.cwd = t.context.tmpDir.path;
 });
@@ -23,13 +23,13 @@ test('initializes git if needed', async (t) => {
   const pkg = {};
   await fs.writeFile(path.join(cwd, 'package.json'), JSON.stringify(pkg));
 
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults: { foo: 'bar' },
     silent: true
   });
 
-  await lassify.manageGitInit();
+  await dchain.manageGitInit();
 
   t.true(await pathExists(path.join(cwd, '.git')));
 });

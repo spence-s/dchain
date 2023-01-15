@@ -3,9 +3,9 @@ import fs from 'node:fs/promises';
 import { cosmiconfig } from 'cosmiconfig';
 import { pathExists } from 'path-exists';
 import { writeConf } from '../helpers/write-config-file.js';
-import type Lassify from '../lassify.js';
+import type Dchain from '../dchain.js';
 
-async function manageLintStaged(this: Lassify) {
+async function manageLintStaged(this: Dchain) {
   if (!this.config.lintStaged || !this.config.husky) return this;
 
   const { spinner, spawn } = this;

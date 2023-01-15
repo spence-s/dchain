@@ -4,13 +4,13 @@ import type { Answers, PromptObject } from 'prompts';
 import type { PackageJson } from 'type-fest';
 
 import { isEmpty, pick } from '../helpers/_.js';
-import type Lassify from '../lassify.js';
+import type Dchain from '../dchain.js';
 
-async function manageDependencies(this: Lassify) {
+async function manageDependencies(this: Dchain) {
   const debug = this.debug.extend('dependencies');
   const { spinner, packageJson } = this;
 
-  spinner.start('Managing lassify dependencies');
+  spinner.start('Managing dchain dependencies');
   const { devDependencies: devDeps = {}, dependencies: deps = {} } =
     packageJson;
 
@@ -89,7 +89,7 @@ async function manageDependencies(this: Lassify) {
   }
 
   if (shouldUpdatePackage) {
-    spinner.start('Updating your package.json to lassify standards!');
+    spinner.start('Updating your package.json to dchain standards!');
     const newPackageJson = {
       ...packageJson,
       devDependencies: {

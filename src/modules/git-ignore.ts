@@ -1,9 +1,9 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { pathExists } from 'path-exists';
-import type Lassify from '../lassify.js';
+import type Dchain from '../dchain.js';
 
-async function gitIgnore(this: Lassify) {
+async function gitIgnore(this: Dchain) {
   const debug = this.debug.extend('git-ignore');
   const { spinner } = this;
   const gitIgnorePath = path.join(this.cwd, '.gitignore');

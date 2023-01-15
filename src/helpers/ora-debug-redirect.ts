@@ -2,7 +2,7 @@ import type { Options, Ora } from 'ora';
 import ora from 'ora';
 import debug from 'debug';
 
-const debugLogger = debug('lassify');
+const debugLogger = debug('dchain');
 
 export type FakeOraMethod =
   | 'start'

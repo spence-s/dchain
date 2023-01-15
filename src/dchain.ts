@@ -45,7 +45,7 @@ export type LassifyOptions = {
   _ncuResults?: Record<string, string>;
 };
 
-export class Lassify {
+export class Dchain {
   debug: debug.Debugger;
   cwd: string;
   yes: boolean;
@@ -80,7 +80,7 @@ export class Lassify {
   manageLintStaged: typeof manageLintStaged;
 
   constructor(options?: LassifyOptions) {
-    this.debug = debug('lassify');
+    this.debug = debug('dchain');
     this.cwd = options?.cwd ? resolve(options.cwd) : process.cwd();
     this.debug(`cwd: ${this.cwd}`);
     this.yes = options?.yes ?? false;
@@ -129,4 +129,4 @@ export class Lassify {
   }
 }
 
-export default Lassify;
+export default Dchain;

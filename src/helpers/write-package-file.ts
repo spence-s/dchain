@@ -1,13 +1,13 @@
 import fs from 'node:fs/promises';
 import prettier from 'prettier';
-import type Lassify from '../lassify.js';
+import type Dchain from '../dchain.js';
 
-async function writePackageFile(this: Lassify) {
+async function writePackageFile(this: Dchain) {
   const prettierConfig =
     (await prettier.resolveConfig(this.pkgPath, {
       editorconfig: true,
       useCache: false
-    })) || {};
+    })) ?? {};
 
   prettierConfig.parser = 'json-stringify';
 

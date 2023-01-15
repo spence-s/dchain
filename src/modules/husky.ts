@@ -4,7 +4,7 @@ import { cosmiconfig } from 'cosmiconfig';
 import semver from 'semver';
 import type { PackageJson } from 'type-fest';
 import { writeConf } from '../helpers/write-config-file.js';
-import type Lassify from '../lassify.js';
+import type Dchain from '../dchain.js';
 
 const hooks = [
   'applypatch-msg',
@@ -26,7 +26,7 @@ const hooks = [
   'pre-push'
 ];
 
-async function manageHusky(this: Lassify) {
+async function manageHusky(this: Dchain) {
   const debug = this.debug.extend('husky');
   const { spawn, spinner } = this;
 

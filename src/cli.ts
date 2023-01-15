@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import process from 'node:process';
 import meow from 'meow';
-import Lassify from './lassify.js';
+import Dchain from './dchain.js';
 
 const cli = meow(
   `
-    Run lassify at the root of any project to install and manage your devDependencies.
+    Run dchain at the root of any project to install and manage your devDependencies.
 
     Usage:
-      $ lassify [options]
+      $ dchain [options]
 
     Options
       --cwd      Optional directory to run the cli from. Defaults to process.cwd().
@@ -16,10 +16,10 @@ const cli = meow(
       --yes, -y  Answer yes to all upgrade prompts
 
     Examples
-      $ lassify
-      $ lassify --cwd '../other/directory'
-      $ lassify --silent
-      $ lassify -y
+      $ dchain
+      $ dchain --cwd '../other/directory'
+      $ dchain --silent
+      $ dchain -y
 `,
   {
     importMeta: import.meta,
@@ -41,7 +41,7 @@ const cli = meow(
 // eslint-disable-next-line unicorn/prefer-top-level-await
 (async () => {
   try {
-    await new Lassify(cli.flags).run();
+    await new Dchain(cli.flags).run();
     process.exit(0);
   } catch {
     process.exit(1);

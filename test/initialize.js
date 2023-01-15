@@ -3,14 +3,14 @@ import test from 'ava';
 import tmp from 'tmp-promise';
 import fs from 'fs-extra';
 import { defaultConfig } from '../src/helpers/config.js';
-import Lassify from '../src/lassify.js';
+import Dchain from '../src/dchain.js';
 import { copyFixture } from './helpers/copy-fixture.js';
 import { _ncuResults } from './helpers/ncu-results.js';
 
 test.beforeEach(async (t) => {
   t.context.tmpDir = await tmp.dir({
     unsafeCleanup: true,
-    prefix: 'lassify-tests'
+    prefix: 'dchain-tests'
   });
   t.context.cwd = t.context.tmpDir.path;
 });
@@ -21,71 +21,71 @@ test.afterEach.always(async (t) => {
 
 test('Does not throw when ran in empty dir', async (t) => {
   const { cwd } = t.context;
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true
   });
-  await t.notThrowsAsync(lassify.initialize());
+  await t.notThrowsAsync(dchain.initialize());
 });
 
 test('uses default config if none present', async (t) => {
   const { cwd } = t.context;
   const pkg = {};
   await fs.writeFile(path.join(cwd, 'package.json'), JSON.stringify(pkg));
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true
   });
-  await lassify.initialize();
-  t.deepEqual(lassify.config, defaultConfig);
+  await dchain.initialize();
+  t.deepEqual(dchain.config, defaultConfig);
 });
 
 test('finds config', async (t) => {
   const { cwd } = t.context;
   await copyFixture('with-config', cwd);
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true
   });
-  await lassify.initialize();
-  t.deepEqual(lassify.config, { xo: true });
-  t.is(lassify.configPath, path.join(cwd, '.lassrc'));
+  await dchain.initialize();
+  t.deepEqual(dchain.config, { xo: true });
+  t.is(dchain.configPath, path.join(cwd, '.lassrc'));
 });
 
 test('finds custom config', async (t) => {
   const { cwd } = t.context;
   await copyFixture('custom-config', cwd);
   const config = path.join(cwd, '.testrc');
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     config,
     _ncuResults: {},
     silent: true
   });
-  await lassify.initialize();
-  t.deepEqual(lassify.config, { xo: true });
-  t.is(lassify.configPath, config);
+  await dchain.initialize();
+  t.deepEqual(dchain.config, { xo: true });
+  t.is(dchain.configPath, config);
 });
 
 test('caches correct managed dependencies', async (t) => {
   const { cwd } = t.context;
   const pkg = {};
   await fs.writeFile(path.join(cwd, 'package.json'), JSON.stringify(pkg));
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true
   });
 
-  await lassify.initialize();
+  await dchain.initialize();
   t.deepEqual(
-    lassify.managedDependencies.sort(),
+    dchain.managedDependencies.sort(),
     Object.keys(_ncuResults).sort()
   );
-  t.deepEqual(lassify.originalDependencies, {});
+  t.deepEqual(dchain.originalDependencies, {});
 });
 
 test('caches correct original dependencies', async (t) => {
@@ -99,17 +99,17 @@ test('caches correct original dependencies', async (t) => {
     }
   };
   await fs.writeFile(path.join(cwd, 'package.json'), JSON.stringify(pkg));
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true
   });
-  await lassify.initialize();
+  await dchain.initialize();
   t.deepEqual(
-    lassify.managedDependencies.sort(),
+    dchain.managedDependencies.sort(),
     Object.keys(_ncuResults).sort()
   );
-  t.deepEqual(lassify.originalDependencies, {
+  t.deepEqual(dchain.originalDependencies, {
     ...pkg.devDependencies,
     ...pkg.dependencies
   });
@@ -118,11 +118,11 @@ test('caches correct original dependencies', async (t) => {
 test('detects yarn package manager', async (t) => {
   const { cwd } = t.context;
   await copyFixture('yarn', cwd);
-  const lassify = new Lassify({
+  const dchain = new Dchain({
     cwd,
     _ncuResults,
     silent: true
   });
-  await lassify.initialize();
-  t.is(lassify.pm, 'yarn');
+  await dchain.initialize();
+  t.is(dchain.pm, 'yarn');
 });
