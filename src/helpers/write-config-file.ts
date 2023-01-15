@@ -6,7 +6,8 @@ import type { PackageJson } from 'type-fest';
 export const writeConf = async (
   conf: string | Record<string, unknown>,
   filePath: string,
-  packageJson: PackageJson
+  packageJson: PackageJson,
+  parser?: string
 ): Promise<void> => {
   const prettierConfig =
     (await prettier.resolveConfig(filePath, {
@@ -19,7 +20,13 @@ export const writeConf = async (
   const ext = path.extname(filePath);
 
   let text;
-  if (!isESM && ['.js', '.cjs'].includes(ext)) {
+  if (parser) {
+    prettierConfig.parser = parser;
+    text = prettier.format(
+      typeof conf === 'string' ? conf : JSON.stringify(conf),
+      prettierConfig
+    );
+  } else if (!isESM && ['.js', '.cjs'].includes(ext)) {
     text = prettier.format(
       `module.exports = ${JSON.stringify(conf)}`,
       prettierConfig
@@ -30,13 +37,13 @@ export const writeConf = async (
       prettierConfig
     );
   } else if (ext.endsWith('.json') || ext === '') {
-    prettierConfig.parser = 'json';
+    prettierConfig.parser = prettierConfig.parser ?? 'json';
     text = prettier.format(
       typeof conf === 'string' ? conf : JSON.stringify(conf),
       prettierConfig
     );
   } else if (ext.endsWith('.yaml') || ext.endsWith('.yml')) {
-    prettierConfig.parser = 'yaml';
+    prettierConfig.parser = prettierConfig.parser ?? 'yaml';
     text = prettier.format(JSON.stringify(conf), prettierConfig);
   }
 

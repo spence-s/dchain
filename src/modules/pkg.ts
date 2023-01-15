@@ -1,7 +1,9 @@
-import { sep } from 'node:path';
+import path, { sep } from 'node:path';
 import prompts from 'prompts';
 import validateNpm from 'validate-npm-package-name';
+import { pathExists } from 'path-exists';
 import * as _ from '../helpers/_.js';
+import { writeConf } from '../helpers/write-config-file.js';
 
 import type Lassify from '../lassify.js';
 
@@ -69,6 +71,17 @@ async function pkg(this: Lassify) {
     debug('package manager %s', choices[pm]);
 
     this.pm = choices[pm]?.title as typeof this.pm;
+  }
+
+  if (!(await pathExists(path.join(this.cwd, '.npmpackagejsonlintrc')))) {
+    await writeConf(
+      JSON.stringify({
+        extends: 'npm-package-json-lint-config-default'
+      }),
+      '.npmpackagejsonlintrc',
+      this.packageJson,
+      'json'
+    );
   }
 }
 
