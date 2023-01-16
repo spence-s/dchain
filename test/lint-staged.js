@@ -2,8 +2,8 @@
 import test from 'ava';
 import tmp from 'tmp-promise';
 // import fs from 'fs-extra';
-// import { defaultConfig } from '../src/helpers/config.js';
-import Dchain from '../src/dchain.js';
+// import { defaultConfig } from '../dist/src/helpers/config.js';
+import Dchain from '../dist/src/dchain.js';
 import { copyFixture } from './helpers/copy-fixture.js';
 import { _ncuResults } from './helpers/ncu-results.js';
 

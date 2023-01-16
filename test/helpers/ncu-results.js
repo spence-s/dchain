@@ -1,4 +1,4 @@
-import { configMap } from '../../src/helpers/config.js';
+import { configMap } from '../../dist/src/helpers/config.js';
 
 const testVersion = '^1.0.0';
 

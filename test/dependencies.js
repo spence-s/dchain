@@ -3,7 +3,7 @@ import test from 'ava';
 import tmp from 'tmp-promise';
 import fs from 'fs-extra';
 import sinon from 'sinon';
-import Dchain from '../src/dchain.js';
+import Dchain from '../dist/src/dchain.js';
 import { _ncuResults } from './helpers/ncu-results.js';
 
 test.beforeEach(async (t) => {

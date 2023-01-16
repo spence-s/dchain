@@ -3,7 +3,7 @@ import test from 'ava';
 import tmp from 'tmp-promise';
 import fs from 'fs-extra';
 import { pathExists } from 'path-exists';
-import Dchain from '../src/dchain.js';
+import Dchain from '../dist/src/dchain.js';
 
 test.beforeEach(async (t) => {
   t.context.tmpDir = await tmp.dir({
