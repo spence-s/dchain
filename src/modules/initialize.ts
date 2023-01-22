@@ -117,6 +117,8 @@ async function initialize(this: Dchain) {
     ? 'yarn'
     : (await pathExists(path.join(this.cwd, 'package-lock.json')))
     ? 'npm'
+    : (await pathExists(path.join(this.cwd, 'pnpm-lock.yaml')))
+    ? 'pnpm'
     : '';
 
   this.spinner.succeed('Dchain initialized successfully!');

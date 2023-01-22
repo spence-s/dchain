@@ -59,7 +59,7 @@ async function pkg(this: Dchain) {
 
   if (!this.pm) {
     debug('asking for package manager');
-    const choices = [{ title: 'npm' }, { title: 'yarn' }];
+    const choices = [{ title: 'npm' }, { title: 'yarn' }, { title: 'pnpm' }];
     const { pm } = await prompts({
       name: 'pm',
       message: '  Choose a package manager',

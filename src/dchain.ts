@@ -68,7 +68,7 @@ export class Dchain {
   originalDependencies: Readonly<Record<string, unknown>>;
   ncuResults: PackageJson.Dependency;
   promptAnswers?: Answers<string>;
-  pm: 'npm' | 'yarn' | '';
+  pm: 'npm' | 'yarn' | 'pnpm' | '';
   writePackageJson: typeof writePackageJson;
   initialize: typeof initialize;
   managePkg: typeof managePkg;
