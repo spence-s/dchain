@@ -20,5 +20,6 @@ export const configMap = {
   commitlint: ['@commitlint/cli', '@commitlint/config-conventional'],
   xo: 'xo',
   lintStaged: 'lint-staged',
-  ava: 'ava'
+  ava: 'ava',
+  ts: 'typescript'
 };

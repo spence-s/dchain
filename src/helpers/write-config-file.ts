@@ -3,6 +3,12 @@ import fs from 'node:fs/promises';
 import prettier from 'prettier';
 import type { PackageJson } from 'type-fest';
 
+/**
+ * @param conf and object or JSON string representing the config
+ * @param filePath
+ * @param packageJson
+ * @param parser
+ */
 export const writeConf = async (
   conf: string | Record<string, unknown>,
   filePath: string,

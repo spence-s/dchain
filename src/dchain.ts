@@ -17,6 +17,7 @@ import manageDeps from './modules/dependencies.js';
 import manageLintStaged from './modules/lint-staged.js';
 import manageEditorConfig from './modules/editor-config.js';
 import managePkg from './modules/pkg.js';
+import manageTs from './modules/typescript.js';
 
 import manageHusky from './modules/husky.js';
 
@@ -78,6 +79,7 @@ export class Dchain {
   manageDeps: typeof manageDeps;
   manageHusky: typeof manageHusky;
   manageLintStaged: typeof manageLintStaged;
+  manageTs: typeof manageTs;
 
   constructor(options?: LassifyOptions) {
     this.debug = debug('dchain');
@@ -107,6 +109,7 @@ export class Dchain {
     this.manageLintStaged = manageLintStaged.bind(this);
     this.manageHusky = manageHusky.bind(this);
     this.writePackageJson = writePackageJson.bind(this);
+    this.manageTs = manageTs.bind(this);
   }
 
   /**
@@ -123,6 +126,7 @@ export class Dchain {
       await this.manageDeps();
       await this.manageHusky();
       await this.manageLintStaged();
+      await this.manageTs();
     } catch (error: unknown) {
       if (error instanceof Error) this.spinner.fail(error.message);
     }
