@@ -8,27 +8,17 @@ async function gitIgnore(this: Dchain) {
   const { spinner } = this;
   const gitIgnorePath = path.join(this.cwd, '.gitignore');
   const defaultGitIgnore = [
-    '#       OS        #',
-    '###################',
     '.DS_Store',
     '.idea',
     'Thumbs.db',
     'tmp/',
     'temp/',
-    '',
-    '#     Node.js     #',
-    '###################',
     'node_modules',
-    '',
-    '#       NYC       #',
-    '###################',
     'coverage',
     '*.lcov',
     '.nyc_output',
-    '',
-    '#      Files      #',
-    '###################',
-    '*.log'
+    '*.log',
+    '.env'
   ];
   debug('checking if .gitignore exists in %s', this.cwd);
   if (await pathExists(gitIgnorePath)) {
