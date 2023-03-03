@@ -3,7 +3,6 @@ import prompts from 'prompts';
 import validateNpm from 'validate-npm-package-name';
 import { pathExists } from 'path-exists';
 import * as _ from '../helpers/_.js';
-import { writeConf } from '../helpers/write-config-file.js';
 
 import type Dchain from '../dchain.js';
 
@@ -74,12 +73,11 @@ async function pkg(this: Dchain) {
   }
 
   if (!(await pathExists(path.join(this.cwd, '.npmpackagejsonlintrc')))) {
-    await writeConf(
+    await this.writeConf(
       JSON.stringify({
         extends: 'npm-package-json-lint-config-default'
       }),
       '.npmpackagejsonlintrc',
-      this.packageJson,
       'json'
     );
   }

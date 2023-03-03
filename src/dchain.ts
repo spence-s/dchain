@@ -23,6 +23,7 @@ import manageHusky from './modules/husky.js';
 
 import ora from './helpers/ora-debug-redirect.js';
 import writePackageJson from './helpers/write-package-file.js';
+import writeConf from './helpers/write-config-file.js';
 import { configMap, defaultConfig } from './helpers/config.js';
 
 export type Config = {
@@ -36,7 +37,7 @@ export type Config = {
   ava?: boolean;
 };
 
-export type LassifyOptions = {
+export type DchainOptions = {
   debug?: Debugger;
   cwd?: string;
   yes?: boolean;
@@ -80,8 +81,9 @@ export class Dchain {
   manageHusky: typeof manageHusky;
   manageLintStaged: typeof manageLintStaged;
   manageTs: typeof manageTs;
+  writeConf: typeof writeConf;
 
-  constructor(options?: LassifyOptions) {
+  constructor(options?: DchainOptions) {
     this.debug = debug('dchain');
     this.cwd = options?.cwd ? resolve(options.cwd) : process.cwd();
     this.debug(`cwd: ${this.cwd}`);
@@ -109,6 +111,7 @@ export class Dchain {
     this.manageLintStaged = manageLintStaged.bind(this);
     this.manageHusky = manageHusky.bind(this);
     this.writePackageJson = writePackageJson.bind(this);
+    this.writeConf = writeConf.bind(this);
     this.manageTs = manageTs.bind(this);
   }
 

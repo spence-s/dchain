@@ -2,19 +2,20 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import prettier from 'prettier';
 import type { PackageJson } from 'type-fest';
+import type Dchain from '../dchain.js';
 
 /**
- * @param conf and object or JSON string representing the config
- * @param filePath
- * @param packageJson
- * @param parser
+ * @param conf - object or JSON string representing the config
+ * @param filePath - path to write the config file to
+ * @param packageJson - meta info for writing the file
+ * @param parser - which prettier parser to use
  */
-export const writeConf = async (
+async function writeConf(
+  this: Dchain,
   conf: string | Record<string, unknown>,
   filePath: string,
-  packageJson: PackageJson,
   parser?: string
-): Promise<void> => {
+): Promise<void> {
   const prettierConfig =
     (await prettier.resolveConfig(filePath, {
       editorconfig: true,
@@ -22,7 +23,7 @@ export const writeConf = async (
     })) ?? {};
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const isESM = packageJson.type === 'module';
+  const isESM = this.packageJson.type === 'module';
   const ext = path.extname(filePath);
 
   let text;
@@ -54,4 +55,6 @@ export const writeConf = async (
   }
 
   if (text) await fs.writeFile(filePath, text);
-};
+}
+
+export default writeConf;

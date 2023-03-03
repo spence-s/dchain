@@ -3,7 +3,6 @@ import { pathExists } from 'path-exists';
 import { cosmiconfig } from 'cosmiconfig';
 import semver from 'semver';
 import type { PackageJson } from 'type-fest';
-import { writeConf } from '../helpers/write-config-file.js';
 import type Dchain from '../dchain.js';
 
 const hooks = [
@@ -161,11 +160,7 @@ async function manageHusky(this: Dchain) {
     if (await pathExists(commitlintConfigPath)) {
       this.spinner.warn('commitlint config already exists');
     } else {
-      await writeConf(
-        commitlintTemplate,
-        commitlintConfigPath,
-        this.packageJson
-      );
+      await this.writeConf(commitlintTemplate, commitlintConfigPath);
       this.spinner.succeed('added default commitlint config');
     }
   }

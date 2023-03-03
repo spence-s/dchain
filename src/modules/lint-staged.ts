@@ -1,9 +1,8 @@
 import path from 'node:path';
-import fs from 'node:fs/promises';
 import { cosmiconfig } from 'cosmiconfig';
 import { pathExists } from 'path-exists';
-import { writeConf } from '../helpers/write-config-file.js';
 import type Dchain from '../dchain.js';
+import template from '../templates/lint-staged.js';
 
 async function manageLintStaged(this: Dchain) {
   if (!this.config.lintStaged || !this.config.husky) return this;
@@ -54,26 +53,20 @@ async function manageLintStaged(this: Dchain) {
 
       if (lsrcPath.includes('package.json')) {
         lsrcPath = lsrcPath.replace('package.json', '.lintstagedrc');
-        await writeConf(newLsConf, lsrcPath, packageJson);
+        await this.writeConf(newLsConf, lsrcPath);
         delete packageJson['lint-staged'];
         await this.writePackageJson();
         spinner.succeed('Fixed and moved lint staged config to .lintstagedrc');
       } else {
-        await writeConf(newLsConf, lsrcPath, packageJson);
+        await this.writeConf(newLsConf, lsrcPath);
         spinner.succeed('Fixed lint staged config');
       }
     }
   } else {
-    lsrcPath = path.join(this.cwd, '.lintstagedrc');
-    const lsrc = [
-      '{',
-      '  "*.md,!test/**/*.md": "prettier --check",',
-      '  "./package.json": "npmPkgJsonLint ./package.json && prettier --check --plugin=prettier-plugin-packagejson ./package.json",',
-      '  "*.js": "xo --fix"',
-      '}'
-    ];
+    lsrcPath = path.join(this.cwd, '.lintstagedrc.js');
+    const lsrc = template;
 
-    await fs.writeFile(lsrcPath, lsrc.join('\n'));
+    await this.writeConf(lsrc, lsrcPath);
     spinner.succeed('lint-staged installed successfully!');
   }
 
