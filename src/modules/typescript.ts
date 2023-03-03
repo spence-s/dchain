@@ -7,7 +7,7 @@ async function ts(this: Dchain) {
   const debug = this.debug.extend('git-init');
   const { spinner, spawn } = this;
   debug('checking if typescript config exists');
-  if (await pathExists(path.join(this.cwd, '.git'))) {
+  if (await pathExists(path.join(this.cwd, 'tsconfig.json'))) {
     spinner.warn('typescript config has been previously created.');
   } else {
     spinner.info('Creating typescript config');
